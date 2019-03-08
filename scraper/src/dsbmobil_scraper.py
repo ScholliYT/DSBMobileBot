@@ -54,7 +54,7 @@ def order_dict(dictionary):
     return {k: order_dict(v) if isinstance(v, dict) else v
             for k, v in sorted(dictionary.items())}
 
-d = DSBMobile("2212010", "DSBmobil3")
+d = DSBMobile("", "")
 if(not d.auth()):
     print("invalid username/password")
     sys.exit()
