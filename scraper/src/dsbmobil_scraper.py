@@ -12,6 +12,10 @@ class DSBMobile:
         self.password = password
 
     def auth(self):
+        if(not self.username or not self.password):
+            print("no username or password")
+            return False
+
         r = requests.get(URL_PREFIX + "/authid/" + self.username + "/" + self.password)
         self.key = r.json()
 
@@ -49,7 +53,7 @@ def order_dict(dictionary):
     return {k: order_dict(v) if isinstance(v, dict) else v
             for k, v in sorted(dictionary.items())}
 
-d = DSBMobile("", "")
+d = DSBMobile("2212010", "DSBmobil3")
 if(not d.auth()):
     print("invalid username/password")
     sys.exit()
@@ -111,4 +115,8 @@ for table in tables:
 groupedTables = order_dict(groupedTables)
 print("\n\n")
 print(groupedTables)
+
+# export as utf-8 encoded json file
+with open("json/groupedtables.json", "w", encoding='utf8') as outfile:
+    json.dump(groupedTables, outfile, indent = 4, ensure_ascii=False)
 
