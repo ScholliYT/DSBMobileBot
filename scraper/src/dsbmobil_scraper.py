@@ -12,6 +12,7 @@ class DSBMobile:
         self.password = password
 
     def auth(self):
+        print("authenticating...")
         if(not self.username or not self.password):
             print("no username or password")
             return False
@@ -69,7 +70,7 @@ for t in filter(lambda x: x.groupName=="Pläne", d.getTimeTables()):
         date = legend.text.strip()
         st = SubstitutionTable(date)
         motd = soup.find("div", attrs={"class": "MessageOfTheDay"})
-        if(motd): 
+        if(motd):
             st.specialText = motd.text.strip()
         tables.append(st)
 
@@ -95,7 +96,7 @@ for t in filter(lambda x: x.groupName=="Pläne", d.getTimeTables()):
         tables.append(st)
 
 
-print("\n\n")
+print("\n")
 groupedTables = {}
 for table in tables:
     groupedTable = {}
@@ -113,10 +114,12 @@ for table in tables:
     groupedTables[table.date] = groupedTable
 
 groupedTables = order_dict(groupedTables)
-print("\n\n")
+print("\n")
 print(groupedTables)
 
 # export as utf-8 encoded json file
+print("\n")
+print("saving data to json/groupedtables.json...")
 with open("json/groupedtables.json", "w", encoding='utf8') as outfile:
     json.dump(groupedTables, outfile, indent = 4, ensure_ascii=False)
-
+print("finished saving data")
