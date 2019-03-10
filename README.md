@@ -15,11 +15,13 @@ You can get messaged by the bot with your current timetable data. Try it out: `@
 - To get your **timetable data** user: `/update`.
 
 ### Development
-add `config.py` with the folling values to `telegram-bot/`
+use pipenv to manage dependencies via pipfile.
 
+add `config.py` with the folling values to `telegram-bot/`
 ```
 ngrok_url = <ENDPOINT_FOR_TELEGRAM_API> # for local dev
 aws_url = <ENDPOINT_FOR_TELEGRAM_API> # for production use
 bot_token = <TELEGRAM_BOT_TOKEN>
 s3_bucket_name = <AMAZON_AWS_S3_BUCKET_NAME_FOR_STORAGE>
 ```
+use `python webhook.py` or `python webhook_ngrok` to set the bot's webhook to procuction / dev endpoint.
