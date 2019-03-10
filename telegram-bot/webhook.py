@@ -2,7 +2,7 @@ from pprint import pprint
 import requests
 import config
 
-test_url = config.aws_url + "/{}".format(bot_token)
+test_url = config.aws_url + "/{}".format(config.bot_token)
 
 def get_url(method):
     return "https://api.telegram.org/bot{}/{}".format(config.bot_token,method)
