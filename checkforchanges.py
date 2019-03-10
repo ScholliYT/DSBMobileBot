@@ -3,6 +3,7 @@ import os
 import json
 import collections
 import unicodedata
+import shutil
 
 def recursively_default_dict():
     return collections.defaultdict(recursively_default_dict)
@@ -50,4 +51,5 @@ print("saving changes to file")
 with open("json/changes.json", "w", encoding='utf8') as outfile:
     json.dump(newdata, outfile, indent = 4, ensure_ascii=False)
 
-
+print("overwriting groupedtables.json with current data")
+os.rename(new_file, "json/groupedtables.json")
