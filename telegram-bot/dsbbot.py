@@ -46,6 +46,22 @@ def updateConfigValue(chat_id, key, value):
     s3 = boto3.resource("s3")
     s3.Bucket(config.s3_bucket_name).put_object(Key=getS3Path(chat_id, "config.json"), Body=encoded_config)
 
+def saveLastUpdate(chat_id, text):
+    encoded_message = json.dumps(text, ensure_ascii=False).encode("utf-8")
+    s3 = boto3.resource("s3")
+    s3.Bucket(config.s3_bucket_name).put_object(Key=getS3Path(chat_id, "lastupdate.json"), Body=encoded_message)
+
+def getLastUpdate(chat_id):
+    try:
+        s3 = boto3.client("s3")
+        response = s3.get_object(Bucket=config.s3_bucket_name, Key=getS3Path(chat_id, "lastupdate.json"))
+        data = response['Body'].read().decode('utf-8')
+        text = json.loads(str(data))
+        return text
+    except Exception as e:
+        # couldn't find lastupdate.json
+        return ""
+
 def process_message(message):
     print("message: " + str(message))
     chat_id = message["chat"]["id"]
@@ -71,10 +87,19 @@ def process_message(message):
                                             response_message = response_message + str(sub) +"\n"
                                     else:
                                         response_message = response_message + "\nAm *" + day + "* sind keine Vertretungen."+"\n\n"
-                                sendMessage(chat_id, response_message)
+                                nochanges_prefix = ""
+                                if getLastUpdate(chat_id) == response_message:        
+                                    nochanges_prefix = "Keine Änderungen seit dem letzten Update!\n"
+                                sendMessage(chat_id, nochanges_prefix + response_message)
+                                saveLastUpdate(chat_id, str(response_message))
                             else:
                                 sendMessage(chat_id, "Da keine Klasse konfiguriert ist, werden alle Daten ausgegeben")
-                                sendMessage(chat_id, str(groupedtables))
+                                nochanges_prefix = ""
+                                if getLastUpdate(chat_id) == str(groupedtables):        
+                                    nochanges_prefix = "Keine Änderungen seit dem letzten Update!\n"
+                                sendMessage(chat_id, nochanges_prefix + response_message)
+                                saveLastUpdate(chat_id, str(groupedtables))
+
                         else:
                             sendMessage(chat_id, "Benutzername oder Passwort falsch")
                     else:
